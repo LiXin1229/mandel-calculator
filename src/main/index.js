@@ -61,11 +61,11 @@ const createWindow = () => {
     mainWindow.show()
   })
 
-  // mainWindow,on('close', () => {
-  //   ipcMainHandlers.forEach(({ event, handler }) => {
-  //     ipcMain.removeHandler(event, handler)
-  //   })
-  // })
+  mainWindow.on('close', () => {
+    ipcMainHandlers.forEach(({ event, handler }) => {
+      ipcMain.removeHandler(event, handler)
+    })
+  })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

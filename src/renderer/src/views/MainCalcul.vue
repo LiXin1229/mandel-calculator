@@ -2,7 +2,8 @@
 import TopTools from '../components/TopTools.vue'
 import { faDeleteLeft, faRepeat, faCode, faUniversalAccess, faClockRotateLeft, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
-import { reactive, ref } from 'vue'
+import { h, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { calculate } from '../utils/calculate'
 
 const main_btn_rows = [
   [
@@ -10,7 +11,7 @@ const main_btn_rows = [
     { id: 1, value: '8', display: '8' },
     { id: 2, value: '9', display: '9' },
     { id: 3, value: 'delete', display: faDeleteLeft },
-    { id: 4, value: 'clear', display: faTrashCan }
+    { id: 4, value: '', display: faTrashCan }
   ],
   [
     { id: 6, value: '4', display: '4' },
@@ -39,16 +40,16 @@ const math_btn_rows = [
   [
     { id: 21, value: 'x', display: '𝓍' },
     { id: 22, value: '^', display: '^' },
-    { id: 23, value: 'lg', display: '𝑙𝑔' },
-    { id: 24, value: 'ln', display: '𝑙𝑛' },
+    { id: 23, value: 'lg(', display: '𝑙𝑔' },
+    { id: 24, value: 'ln(', display: '𝑙𝑛' },
     { id: 25, value: 'e', display: '𝒆' },
     { id: 26, value: 'π', display: 'π' }
   ],
   [
     { id: 27, value: 'deg', display: 'deg' },
-    { id: 28, value: 'sin', display: '𝑠𝑖𝑛' },
-    { id: 29, value: 'cos', display: '𝑐𝑜𝑠' },
-    { id: 30, value: 'tan', display: '𝑡𝑎𝑛' },
+    { id: 28, value: 'sin(', display: '𝑠𝑖𝑛' },
+    { id: 29, value: 'cos(', display: '𝑐𝑜𝑠' },
+    { id: 30, value: 'tan(', display: '𝑡𝑎𝑛' },
     { id: 31, value: '(', display: '(' },
     { id: 32, value: ')', display: ')' }
   ]
@@ -93,13 +94,133 @@ const changeSolveType = () => {
 }
 
 let click_btn = ref(-1)
+
+let ori_expression = ref('')
+
 const handleButtonClick = (button) => {
   console.log(button)
   click_btn.value = button.id
   setTimeout(() => {
     click_btn.value = -1
   }, 200)
+
+  if (button.id === 35) {
+    moveCursor(cursor_index.value - 1)
+  }
+
+  else if (button.id === 36) {
+    moveCursor(cursor_index.value + 1)
+  }
+
+  else if ([28, 29, 30].includes(button.id)) {
+    const before = ori_expression.value.slice(0, cursor_index.value)
+    const after = ori_expression.value.slice(cursor_index.value)
+    ori_expression.value = before + button.value + after
+    moveCursor(cursor_index.value + 4)
+  }
+
+  else if ([23, 24].includes(button.id)) {
+    const before = ori_expression.value.slice(0, cursor_index.value)
+    const after = ori_expression.value.slice(cursor_index.value)
+    ori_expression.value = before + button.value + after
+    moveCursor(cursor_index.value + 3)
+  }
+
+  else if ([3, 4].includes(button.id)) {
+    if (button.value) {
+      const before = ori_expression.value.slice(0, cursor_index.value - 1)
+      const after = ori_expression.value.slice(cursor_index.value)
+
+      ori_expression.value = before + after
+      moveCursor(cursor_index.value - 1)
+    } else {
+      ori_expression.value = ''
+    }
+  }
+
+  // 计算
+  else if (button.id === 20) {
+    // TODO
+    ori_expression.value = calculate(ori_expression.value)
+    moveCursor(ori_expression.value.length)
+  }
+
+  else {
+    const before = ori_expression.value.slice(0, cursor_index.value)
+    const after = ori_expression.value.slice(cursor_index.value)
+    ori_expression.value = before + button.value + after
+    moveCursor(cursor_index.value + 1)
+  }
+
+  showCursor.value = true
 }
+
+let cursor_index = ref(0)
+
+const moveCursor = (newIndex) => {
+  // 确保光标位置在有效范围内
+  cursor_index.value = Math.max(0, Math.min(newIndex, ori_expression.value.length))
+}
+
+// 渲染表达式
+const renderDisplay = () => {
+  // moveCursor(ori_expression.value.length)
+  let before = ori_expression.value.slice(0, cursor_index.value)
+  let after = ori_expression.value.slice(cursor_index.value)
+
+  before = beautifyDisplay(before)
+  after = beautifyDisplay(after)
+
+  return h('div', {
+    style: {
+      color: 'var(--theme-text-2)',
+      'font-size': '3vh'
+    }
+  }, [
+    before,
+    h('span', {
+      style: {
+        display: 'inline-block',
+        position: 'relative',
+        width: 0,
+        overflow: 'visible',
+        color: 'var(--theme-cursor)',
+        opacity: showCursor.value ? 1 : 0,
+        transition: 'opacity 0.3s ease-out',
+        transform: 'translate(-2px, -3px) scale(1.2)',
+      }
+    }, '|'),
+    after
+  ])
+}
+
+let showCursor = ref(true)
+let interval
+
+const beautifyDisplay = (str) => {
+  return [
+    { pattern: /-/g, replacement: '−' },
+    { pattern: /\*/g, replacement: '×' },
+    { pattern: /x/g, replacement: '𝓍' },
+    { pattern: /e/g, replacement: '𝒆' },
+    { pattern: /sin/g, replacement: '𝑠𝑖𝑛' },
+    { pattern: /cos/g, replacement: '𝑐𝑜𝑠' },
+    { pattern: /tan/g, replacement: '𝑡𝑎𝑛' },
+    { pattern: /lg/g, replacement: '𝑙𝑔' },
+    { pattern: /ln/g, replacement: '𝑙𝑛' }
+  ].reduce((acc, { pattern, replacement }) =>
+    acc.replace(pattern, replacement), str)
+}
+
+onMounted(() => {
+  interval = setInterval(() => {
+    showCursor.value = !showCursor.value
+  }, 500)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(interval)
+})
 </script>
 
 <template>
@@ -114,8 +235,12 @@ const handleButtonClick = (button) => {
       </div>
     </div>
     <div class="main-content">
-      <div class="screen">screen</div>
-      <div class="functional-panel">
+      <div class="screen">
+        <div class="display">
+          <component :is="renderDisplay" />
+        </div>
+      </div>
+      <div class="functional-panel unselectable">
         <div class="top">
           <div class="left">
             <span class="functional_btn" v-for="btn in functional_btn_rows[0]" :key="btn.id" @click="handleButtonClick(btn)">
@@ -144,7 +269,7 @@ const handleButtonClick = (button) => {
           </div>
         </div>
       </div>
-      <div class="math-panel">
+      <div class="math-panel unselectable">
         <div class="row" v-for="(row, rowIndex) in math_btn_rows" :key="rowIndex">
           <div
             :class="['col', button.id === click_btn && 'active', italic_list1.includes(button.id) && 'italic1', italic_list2.includes(button.id) && 'italic2', thinner_list.includes(button.id) && 'thinner']"
@@ -161,7 +286,7 @@ const handleButtonClick = (button) => {
           </div>
         </div>
       </div>
-      <div class="main-panel">
+      <div class="main-panel unselectable">
         <div class="row" v-for="(row, rowIndex) in main_btn_rows" :key="rowIndex">
         <div
           :class="['col', button.id === click_btn && 'active', larger_list.includes(button.id) && 'larger', smaller_list.includes(button.id) && 'smaller']"
@@ -197,6 +322,10 @@ const handleButtonClick = (button) => {
     font-size: 14px;
     padding-left: 30px;
 
+    .left {
+      color: var(--theme-btn);
+    }
+
     img {
       height: 18px;
       position: absolute;
@@ -217,6 +346,11 @@ const handleButtonClick = (button) => {
       border-radius: 5px;
       padding: 10px;
       background-color: var(--theme-screen);
+
+      // .display {
+      //   transform: translateY(-20%);
+      //   transform: scale();
+      // }
     }
 
     .functional-panel {
@@ -236,7 +370,7 @@ const handleButtonClick = (button) => {
             text-align: center;
             font-size: calc(3vh);
             border-radius: 1vh;
-            color: var(--theme-text-2);
+            color: var(--theme-icon-func);
             margin-top: 7px;
             margin-left: 7px;
             transition: 0.2s all linear;
@@ -270,7 +404,7 @@ const handleButtonClick = (button) => {
 
         .solve-type-btn {
           width: calc((100vw - 20px - 15px) / 5);
-          font-size: calc(2vh);
+          font-size: calc(2.5vh);
         }
       }
 

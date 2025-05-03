@@ -31,12 +31,13 @@
   --theme-btn: #e9f0f4;
   --theme-btn-hover1: #cee0eb;
   --theme-btn-hover2: #cacccc;
-  --theme-top: #cacccc;
-  --theme-top-btn-hover: #afb1b1;
+  --theme-top: #2a2d33;
+  --theme-top-btn-hover: #3c3f42;
   --theme-top-btn-hover-close: #e81123;
   --theme-border: #c6c9c9;
   --theme-icon: #146ebe;
-  --theme-cursor: #b48806;
+  --theme-icon-func: #515c67;
+  --theme-cursor: #218d8f;
   --theme-hover: #d6dada;
   --theme-btn-active: #218d8f;
   --theme-screen: #f5f5f5;
@@ -65,6 +66,13 @@
 
 .no-drag {
   -webkit-app-region: no-drag;
+}
+
+.unselectable {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+/Edge */
+  user-select: none;         /* Standard */
 }
 
 *,

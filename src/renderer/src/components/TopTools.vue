@@ -93,7 +93,7 @@ const handleClick = async (type) => {
         }
 
         span {
-          color: rgb(73, 73, 73);
+          color: var(--theme-btn-hover2);
         }
       }
 
