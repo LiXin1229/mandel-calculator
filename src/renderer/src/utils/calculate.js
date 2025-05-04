@@ -10,8 +10,8 @@ export const calculate = (ori_epression) => {
   while (i < ori_epression.length) {
     const ch = ori_epression[i]
 
-    console.log('sum ', sum)
-    console.log('stack ', stack)
+    // console.log('sum ', sum)
+    // console.log('stack ', stack)
 
     // 跳过空格
     if (ch === ' ') {
@@ -113,37 +113,38 @@ export const calculate = (ori_epression) => {
       continue
     }
 
-    alert('输入错误')
-    return
+    throw new Error('输入错误')
   }
 
   return sum.toString()
 }
 
+const DISPLAY_ACCURACY = 9
+
 const operation = (pre, operator, curr) => {
   switch (operator) {
     case '+':
-      return pre.plus(curr)
+      return pre.plus(curr).toDecimalPlaces(DISPLAY_ACCURACY)
     case '-':
-      return pre.minus(curr)
+      return pre.minus(curr).toDecimalPlaces(DISPLAY_ACCURACY)
     case '*':
-      return pre.times(curr)
+      return pre.times(curr).toDecimalPlaces(DISPLAY_ACCURACY)
     case '/':
-      return pre.dividedBy(curr)
+      return pre.dividedBy(curr).toDecimalPlaces(DISPLAY_ACCURACY)
     case '^':
-      return pre.pow(curr)
+      return pre.pow(curr).toDecimalPlaces(DISPLAY_ACCURACY)
     case 's':
-      return pre.plus(Math.sin(curr))
+      return pre.plus(Math.sin(curr)).toDecimalPlaces(DISPLAY_ACCURACY)
     case 'c':
-      return pre.plus(Math.cos(curr))
+      return pre.plus(Math.cos(curr)).toDecimalPlaces(DISPLAY_ACCURACY)
     case 't':
-      return pre.plus(Math.tan(curr))
+      return pre.plus(Math.tan(curr)).toDecimalPlaces(DISPLAY_ACCURACY)
     case 'n':
-      return pre.plus(Math.log(curr))
+      return pre.plus(Math.log(curr)).toDecimalPlaces(DISPLAY_ACCURACY)
     case 'g':
-      return pre.plus(Math.log10(curr))
+      return pre.plus(Math.log10(curr)).toDecimalPlaces(DISPLAY_ACCURACY)
     case 'd':
-      return pre.plus(decimalToRad(curr))
+      return pre.plus(decimalToRad(curr)).toDecimalPlaces(DISPLAY_ACCURACY)
   }
 }
 
@@ -161,18 +162,41 @@ const handleDegrees = (numStr) => {
 }
 
 // 将 ° 转化成 ° ' "
-const decimalToDMS = (decimalDegrees) => {
-  const degrees = new Decimal(decimalDegrees).floor()
-  const minutesDecimal = new Decimal(decimalDegrees).minus(degrees).times(60)
-  const minutes = minutesDecimal.floor()
-  const seconds = minutesDecimal.minus(minutes).times(60).toFixed(2)
+export const decimalToDMS = (decimalDegrees) => {
+  if (isNaN(decimalDegrees) || decimalDegrees === null) throw new Error('输入错误')
 
-  let result = degrees.toString() + '°'
-  if (minutes.greaterThan(0) || seconds > 0) {
-    result += minutes.toString() + "'"
+  const deg = new Decimal(decimalDegrees)
+  const absDeg = deg.abs()
+
+  const degrees = absDeg.floor()
+  const minutesDecimal = absDeg.minus(degrees).times(60)
+  const minutes = minutesDecimal.floor()
+  const seconds = minutesDecimal.minus(minutes).times(60)
+
+  // 四舍五入 (秒保留1位小数)
+  const roundedSeconds = seconds.toDecimalPlaces(1, Decimal.ROUND_HALF_UP)
+
+  let finalMinutes = minutes
+  let finalSeconds = roundedSeconds
+  if (roundedSeconds.gte(60)) {
+    finalMinutes = finalMinutes.plus(1)
+    finalSeconds = new Decimal(0)
   }
-  if (seconds > 0) {
-    result += seconds.toString() + '"'
+
+  let finalDegrees = degrees
+  if (finalMinutes.gte(60)) {
+    finalDegrees = finalDegrees.plus(1)
+    finalMinutes = new Decimal(0)
+  }
+
+  finalDegrees = deg.lt(0) ? finalDegrees.neg() : finalDegrees
+
+  let result = `${finalDegrees.toString()}°`
+  if (!finalMinutes.eq(0) || !finalSeconds.eq(0)) {
+    result += `${finalMinutes.toString()}'`
+  }
+  if (!finalSeconds.eq(0)) {
+    result += `${finalSeconds.toString()}"`
   }
 
   return result
@@ -182,7 +206,7 @@ const decimalToDMS = (decimalDegrees) => {
 const decimalToRad = (decimalDegrees) => {
   const pi = new Decimal(Math.PI)
   const degrees = new Decimal(decimalDegrees)
-  return degrees.times(pi).dividedBy(180)
+  return degrees.times(pi).dividedBy(180).toDecimalPlaces(DISPLAY_ACCURACY).toString()
 }
 
 // 判断是否是 数字 及 ° ' "
