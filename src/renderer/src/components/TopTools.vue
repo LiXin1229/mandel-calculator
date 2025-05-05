@@ -61,13 +61,8 @@ const handleClick = async (type) => {
 
     .topup {
       .icon-top {
-        color: var(--theme-icon);
+        color: var(--theme-cursor);
       }
-    }
-
-    .topup:hover {
-      background-color: var(--theme-top-btn-hover);
-      color: var(--theme-top-btn-hover);
     }
 
     ul {
@@ -93,7 +88,7 @@ const handleClick = async (type) => {
         }
 
         span {
-          color: var(--theme-btn-hover2);
+          color: #fff;
         }
       }
 

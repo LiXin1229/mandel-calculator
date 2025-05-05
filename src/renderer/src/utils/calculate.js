@@ -163,9 +163,7 @@ const handleDegrees = (numStr) => {
 
 // 将 ° 转化成 ° ' "
 export const decimalToDMS = (decimalDegrees) => {
-  if (isNaN(decimalDegrees) || decimalDegrees === null) throw new Error('输入错误')
-
-  const deg = new Decimal(decimalDegrees)
+  const deg = new Decimal(decimalDegrees.replace('°', ''))
   const absDeg = deg.abs()
 
   const degrees = absDeg.floor()

@@ -9,7 +9,7 @@ export const solveEquationByBisection = (ori_epression, x0, xl, xr) => {
   const f = createParserFunction(ori_epression)
 
   if (!hasRealSolution(f, x0, xl, xr)) {
-    throw new Error('方程在实数范围可能内无解')
+    throw new Error('方程在指定范围可能无解')
   }
 
   try {
@@ -21,7 +21,7 @@ export const solveEquationByBisection = (ori_epression, x0, xl, xr) => {
       return bisection(f, a, b)
     }
   } catch (err) {
-    throw new Error(err)
+    throw err
   }
 }
 
@@ -32,7 +32,7 @@ export const solveEquationByHybrid = (ori_epression, x0) => {
   try {
     return hybridMethod(f, x0)
   } catch (err) {
-    throw new Error(err)
+    throw err
   }
 }
 
@@ -82,11 +82,19 @@ const hasRealSolution = (f, x0, xl, xr) => {
 // 2 * sin(x)^2 + 3 * cos(x) - 3   x = 0 或 1.047197551197 或
 
 // 混合法解一元方程 (牛顿法 + 二分法)
-const hybridMethod = (f, x0, fPrime, tol = CALCULATION_ACCURACY, maxIter = 50) => {
+const hybridMethod = (f, x0, fPrime, tol = CALCULATION_ACCURACY, maxIter = 50, timeoutMs = 3000) => {
   let x = new Decimal(x0)
   const df = fPrime || numericalDerivative(f) // 导函数
+  const startTime = Date.now()
 
   for (let i = 0; i < maxIter; i++) {
+    // 检查是否超时
+    if (Date.now() - startTime > timeoutMs) {
+      console.log('牛顿法超时, 改用二分法')
+      const [a, b] = findInitialInterval(f, x0)
+      return bisection(f, a, b)
+    }
+
     const fx = new Decimal(f(x))
 
     // 检查是否收敛
@@ -140,11 +148,13 @@ const bisection = (f, a, b, tol = CALCULATION_ACCURACY) => {
 }
 
 // 初始化二分法区间
-const findInitialInterval = (f, x0, count = 0, maxAttempts = 20) => {
+const findInitialInterval = (f, x0, count = 0, maxAttempts = 20, timeoutMs = 2000) => {
   const x0Dec = new Decimal(x0)
   console.log(count)
   // 基础步长
   const baseStep = new Decimal(0.5)
+
+  const startTime = Date.now()
 
   // 获取初始动态步长
   let step = getDynamicStep(f, x0Dec, baseStep.dividedBy(count + 1))
@@ -153,14 +163,22 @@ const findInitialInterval = (f, x0, count = 0, maxAttempts = 20) => {
     throw new Error(`尝试次数超过[${maxAttempts}]次`)
   }
 
+  // 检查是否超时
+  const checkTimeout = () => {
+    if (Date.now() - startTime > timeoutMs) {
+      throw new Error('区间搜索超时')
+    }
+  }
+
   // 扩大搜索范围
   const range = Decimal(2).pow(count)
-  console.log(range.toNumber())
   const start = x0Dec.minus(range)
   const end = x0Dec.plus(range)
 
   let a = start
   while (a.plus(step).lte(end)) {
+    checkTimeout()
+
     const b = a.plus(step)
     const fa = f(a)
     const fb = f(b)

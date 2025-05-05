@@ -28,6 +28,7 @@
     "expr-eval": "^2.0.2",
     "mathjs": "^14.4.0",
     "sass": "^1.87.0",
+    "unplugin-element-plus": "^0.10.0",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {

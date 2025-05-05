@@ -5,6 +5,7 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons/faTrashCan'
 import { h, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { calculate, decimalToDMS } from '../utils/calculate'
 import { solveEquationByHybrid, solveEquationByBisection } from '../utils/solve'
+import { ElMessage } from 'element-plus'
 
 const main_btn_rows = [
   [
@@ -71,8 +72,8 @@ const functional_btn_rows = [
     { id: 39, value: '\"', display: '\"' }
   ],
   [
-    { id: 40, value: 'esc', display: 'Back' },
-    { id: 41, value: 'enter', display: 'Ctrl+v' }
+    { id: 40, value: 'Escape', display: 'Esc' },
+    { id: 41, value: 'enter', display: 'Shift' }
   ]
 ]
 
@@ -109,8 +110,13 @@ const handleButtonClick = (button) => {
     click_btn.value = -1
   }, 200)
 
-  if (showInitialX.value === true) {
-    if ([18].includes(button.id)) return
+  if (button.id === 33) { // 主题切换
+    document.documentElement.classList.toggle('dark')
+    return
+  }
+
+  if (showInitialX.value === true) { // 在设置初始值时进入 handleHybridClick 或 handleBisectionClick
+    if ([18, 41].includes(button.id)) return
     if ([34].includes(button.id)) {
       handleButtonClick({ id: 19 })
       handleButtonClick({ id: 34 })
@@ -184,7 +190,11 @@ const handleButtonClick = (button) => {
       ori_expression.value = decimalToDMS(ori_expression.value)
       moveCursor(ori_expression.value.length, ori_expression.value.length)
     } catch (err) {
-      alert(err)
+      // alert(err)
+      ElMessage({
+        message: '请输入十进制角度',
+        type: 'info'
+      })
     }
   }
 
@@ -245,7 +255,11 @@ const handleHybridClick = (button) => {
   }
 
   else if (x0.value.length > 10) {
-    alert('长度超出限制')
+    // alert('长度超出限制')
+    ElMessage({
+      message: '输入长度超出限制',
+      type: 'info'
+    })
   }
 
   else if ([27, 28, 29, 30].includes(button.id)) {
@@ -266,7 +280,7 @@ const handleHybridClick = (button) => {
     handleSolve()
   }
 
-  else if (button.id === 19) {
+  else if (button.id === 19 || button.id === 40) {
     switchToSolveType()
   }
 
@@ -324,7 +338,11 @@ const handleBisectionClick = (button) => {
   }
 
   else if (x_list[isleft.value].length > 10) {
-    alert('长度超出限制')
+    // alert('长度超出限制')
+    ElMessage({
+      message: '输入长度超出限制',
+      type: 'info'
+    })
   }
 
   else if ([27, 28, 29, 30].includes(button.id)) {
@@ -345,7 +363,7 @@ const handleBisectionClick = (button) => {
     handleSolve()
   }
 
-  else if (button.id === 19) {
+  else if (button.id === 19 || button.id === 40) {
     switchToSolveType()
   }
 
@@ -414,7 +432,11 @@ const handleCalculate = () => {
     ori_expression.value = calculate(ori_expression.value)
     history.push(pre_ori)
   } catch (err) {
-    alert(err)
+    // alert(err)
+    ElMessage({
+      message: '请输入有效表达式',
+      type: 'info'
+    })
   }
 }
 
@@ -438,19 +460,51 @@ const switchToSolveType = () => {
 const handleSolve = () => {
   if (solve_type.value === 'Hybrid') {
     try {
-      const x_res = solveEquationByHybrid(ori_expression.value, x0.value)
+      let _x0 = ''
+      try {
+        _x0 = calculate(x0.value)
+      } catch (err) {
+        ElMessage({
+          message: '请输入有效表达式',
+          type: 'info'
+        })
+        return
+      }
+      const x_res = solveEquationByHybrid(ori_expression.value, _x0)
       console.log('使用混合法, ', ori_expression.value, x0.value, ' x = ', x_res)
-      history.push(ori_expression.value + ' = 0\u00A0\u00A0\u00A0[' + '𝓍₀ = ' + x0.value + ']\u00A0\u00A0\u00A0' + '𝓍 = ' + x_res)
+      history.push(ori_expression.value + ' = 0\u00A0\u00A0\u00A0[' + '𝓍₀ = ' + _x0 + ']\u00A0\u00A0\u00A0' + '𝓍 = ' + x_res)
     } catch (err) {
-      alert(err)
+      // alert(err)
+      ElMessage({
+        message: err.toString().slice(7),
+        type: 'info'
+      })
     }
   } else if (solve_type.value === 'Bisection') {
     try {
-      const x_res = solveEquationByBisection(ori_expression.value, x0.value, x_list[0], x_list[1])
+      let _x0 = ''
+      let _xl = ''
+      let _xr = ''
+      try {
+        _x0 = calculate(x0.value)
+        _xl = calculate(x_list[0])
+        _xr = calculate(x_list[1])
+      } catch (err) {
+        ElMessage({
+          message: '请输入有效表达式',
+          type: 'info'
+        })
+        return
+      }
+      const x_res = solveEquationByBisection(ori_expression.value, _x0, _xl, _xr)
       console.log('使用二分法, ', ori_expression.value, x_list[0], x_list[1], ' x = ', x_res)
-      history.push(`${ori_expression.value} = 0\u00A0\u00A0\u00A0[𝓍ₗ = ${x_list[0]}, 𝓍ᵣ = ${x_list[1]}]\u00A0\u00A0\u00A0𝓍 = ${x_res}`)
+      history.push(`${ori_expression.value} = 0\u00A0\u00A0\u00A0[𝓍ₗ = ${_xl}, 𝓍ᵣ = ${_xr}]\u00A0\u00A0\u00A0𝓍 = ${x_res}`)
     } catch (err) {
-      alert(err)
+      // alert(err)
+      ElMessage({
+        message: err.toString().slice(7),
+        type: 'info'
+      })
     }
   }
 }
@@ -532,7 +586,7 @@ const renderInitialX = () => {
           display: 'inline-block',
           position: 'relative',
           width: 0,
-          color: 'var(--theme-isSolving-btn)',
+          color: 'var(--theme-cursor)',
           opacity: flicker.value ? 1 : 0,
           transition: 'opacity 0.3s ease-out',
           transform: 'translate(-2px, -3px) scale(1.2)'
@@ -558,7 +612,7 @@ const renderInitialX = () => {
             display: 'inline-block',
             position: 'relative',
             width: 0,
-            color: 'var(--theme-isSolving-btn)',
+            color: 'var(--theme-cursor)',
             opacity: flicker.value ? 1 : 0,
             transition: 'opacity 0.3s ease-out',
             transform: 'translate(-2px, -3px) scale(1.2)'
@@ -576,7 +630,7 @@ const renderInitialX = () => {
             display: 'inline-block',
             position: 'relative',
             width: 0,
-            color: 'var(--theme-isSolving-btn)',
+            color: 'var(--theme-cursor)',
             opacity: flicker.value ? 1 : 0,
             transition: 'opacity 0.3s ease-out',
             transform: 'translate(-2px, -3px) scale(1.2)'
@@ -696,19 +750,27 @@ onMounted(() => {
       handleButtonClick(button)
     }
     if (['d', 'g', 's', 'i', 'n', 'c', 'o', 't', 'a', 'l', ' '].includes(key)) {
-      // ori_expression.value += key
-      // cursor_index.value++
       const before = ori_expression.value.slice(0, cursor_index.value)
       const after = ori_expression.value.slice(cursor_index.value++)
       ori_expression.value = before + key + after
     } else if (key === 'Enter') {
-      handleButtonClick({ id: 20 })
+      read_history.value ? handleButtonClick({ id: 41 }) : handleButtonClick({ id: 20 })
     } else if (['ArrowLeft', 'ArrowUp'].includes(key)) {
       handleButtonClick({ id: 35 })
     } else if (['ArrowRight', 'ArrowDown'].includes(key)) {
       handleButtonClick({ id: 36 })
     } else if (['q', ';', ':'].includes(key)) {
       handleButtonClick({ id: 37, value: '°' })
+    } else if (key === 'Alt') {
+      handleButtonClick({ id: 19 })
+    } else if (key === 'Control') {
+      handleButtonClick({ id: 18 })
+    } else if (key === 'Tab') {
+      TriggerSolveType()
+    } else if (key === 'h') {
+      handleButtonClick({ id: 34 })
+    } else if (key === 'm') {
+      handleButtonClick({ id: 33 })
     }
   }
 
@@ -821,6 +883,7 @@ onBeforeUnmount(() => {
   color: var(--theme-text-2);
   background-color: var(--theme-background);
   overflow: hidden;
+  transition: 0.3s all ease-in-out;
 
   .top-bar {
     display: flex;
@@ -829,11 +892,11 @@ onBeforeUnmount(() => {
     line-height: 25px;
     background-color: var(--theme-top);
     font-style: italic;
-    font-size: 14px;
+    font-size: 12px;
     padding-left: 30px;
 
     .left {
-      color: var(--theme-btn);
+      color: #fff;
     }
 
     img {
@@ -871,8 +934,8 @@ onBeforeUnmount(() => {
         }
 
         .active_history {
-          border-top: 1.5px solid var(--theme-isSolving-btn);
-          border-bottom: 1.5px solid var(--theme-isSolving-btn);
+          border-top: 1.5px solid var(--theme-active-history);
+          border-bottom: 1.5px solid var(--theme-active-history);
           background-color: var(--theme-history-bg);
         }
       }
@@ -936,8 +999,9 @@ onBeforeUnmount(() => {
         .solve-type-btn {
           width: calc((100vw - 20px - 15px) / 5);
           font-size: calc(2.5vh);
-          background-color: var(--theme-icon);
-          color: var(--theme-btn);
+          background-color: var(--theme-btn);
+          color: var(--theme-active-history);
+          border-color: var(--theme-active-history);
         }
       }
 
@@ -980,6 +1044,10 @@ onBeforeUnmount(() => {
           height: 5vh !important;
           font-size: 3vh !important;
           line-height: 5vh !important;
+        }
+
+        .solve-type-btn {
+          font-size: calc(2vh) !important;
         }
 
         .bottom {

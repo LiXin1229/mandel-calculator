@@ -28,9 +28,9 @@
   --color-background: #f5f5f5;
   --theme-text-1: #222;
   --theme-text-2: #3d3d3d;
-  --theme-btn: #e9f0f4;
+  --theme-btn: #eee;
   --theme-main-btn: #fdfdfd;
-  --theme-btn-hover1: #cee0eb;
+  --theme-btn-hover1: #e9eaec;
   --theme-btn-hover2: #cacccc;
   --theme-top: #2a2d33;
   --theme-top-btn-hover: #3c3f42;
@@ -40,20 +40,34 @@
   --theme-icon-func: #515c67;
   --theme-cursor: #218d8f;
   --theme-hover: #d6dada;
-  --theme-btn-active: #218d8f;
+  --theme-btn-active: #c4d3f0;
   --theme-screen: #edeeee;
   --theme-spical-btn: #339ca8;
   --theme-isSolving-btn: #626c91;
-  --theme-history-bg: #7887ba1f;
+  --theme-history-bg: #4dcee828;
+  --theme-msg-info: #626c91;
+  --theme-active-history: #4dcee8;
 }
 
-[data-theme="dark"] {
-  // 深色主题
-  --primary-color: #42b983;
-  --secondary-color: #a8d8ea;
-  --bg-color: #1a1a1a;
-  --text-color: #f0f0f0;
-  --border-color: #333333;
+:root.dark {
+  --color-background: #181c21;
+  --theme-text-1: #eeefef;
+  --theme-text-2: #cde0e0;
+  --theme-btn: #222b34b6;
+  --theme-main-btn: #1e2125;
+  --theme-btn-hover1: #31343a;
+  --theme-btn-hover2: #363a3f;
+  --theme-top-btn-hover: #363a3f;
+  --theme-icon-func: #9aa2a6;
+  --theme-cursor: #ffd866;
+  --theme-border: #5d6267;
+  --theme-icon: #bcbcbc;
+  --theme-screen: #2a2d33;
+  --theme-spical-btn: #fdfdfd;
+  --theme-isSolving-btn: #4dcee8;
+  --theme-history-bg: #31343a85;
+  --theme-msg-info: #9f76e3;
+  --theme-active-history: #ffd966;
 }
 
 :root {
