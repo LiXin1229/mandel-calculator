@@ -53,7 +53,7 @@
   --color-background: #181c21;
   --theme-text-1: #eeefef;
   --theme-text-2: #cde0e0;
-  --theme-btn: #222b34b6;
+  --theme-btn: #252d34;
   --theme-main-btn: #1e2125;
   --theme-btn-hover1: #31343a;
   --theme-btn-hover2: #363a3f;
@@ -133,17 +133,17 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(239, 239, 239);
+  background: var(--theme-screen);
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bfbfbf;
+  background: var(--theme-isSolving-btn);
   border-radius: 10px;
 }
 

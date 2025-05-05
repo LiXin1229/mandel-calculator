@@ -48,7 +48,7 @@ const math_btn_rows = [
     { id: 26, value: 'π', display: 'π' }
   ],
   [
-    { id: 27, value: 'deg(', display: '𝒹𝑒𝑔' },
+    { id: 27, value: 'rad(', display: '𝓇𝒶𝒹' },
     { id: 28, value: 'sin(', display: '𝑠𝑖𝑛' },
     { id: 29, value: 'cos(', display: '𝑐𝑜𝑠' },
     { id: 30, value: 'tan(', display: '𝑡𝑎𝑛' },
@@ -105,6 +105,7 @@ let ori_expression = ref('')
 
 // 点击按钮
 const handleButtonClick = (button) => {
+  // console.log(ori_expression.value)
   click_btn.value = button.id
   setTimeout(() => {
     click_btn.value = -1
@@ -721,7 +722,7 @@ let interval
 
 const beautifyDisplay = (str) => {
   return [
-    { pattern: /deg/g, replacement: '𝒹𝑒𝑔' }, // 𝓭𝒆𝓰
+    { pattern: /rad/g, replacement: '𝓇𝒶𝒹' },
     { pattern: /lg/g, replacement: '𝑙𝑔' },
     { pattern: /ln/g, replacement: '𝑙𝑛' },
     { pattern: /sin/g, replacement: '𝑠𝑖𝑛' },
@@ -746,13 +747,13 @@ const bindingKey = () => {
   ]
 
   const handleKeyUp = (e) => {
-    console.log(e)
+    // console.log(e)
     const key = e.key
     const button = allButtons.find(btn => btn.value === key)
     if (button) {
       handleButtonClick(button)
     }
-    if (['d', 'g', 's', 'i', 'n', 'c', 'o', 't', 'a', 'l', ' '].includes(key)) {
+    if (['r', 'g', 's', 'i', 'n', 'c', 'o', 't', 'a', 'l', 'd', ' '].includes(key)) {
       const before = ori_expression.value.slice(0, cursor_index.value)
       const after = ori_expression.value.slice(cursor_index.value++)
       ori_expression.value = before + key + after

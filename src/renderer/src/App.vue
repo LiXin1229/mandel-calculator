@@ -3,7 +3,7 @@ import { ElConfigProvider } from 'element-plus'
 </script>
 
 <template>
-  <el-config-provider :message="{ max: 1 }">
+  <el-config-provider :message="{ max: 3 }">
     <router-view />
   </el-config-provider>
 </template>
@@ -16,7 +16,6 @@ body {
     border: 0;
 
     .el-message__content {
-      // color: var(--theme-icon-func);
       color: var(--theme-msg-info);
     }
   }

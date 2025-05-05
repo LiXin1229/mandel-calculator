@@ -1,6 +1,7 @@
 import Decimal from 'decimal.js'
 import { Parser } from 'expr-eval'
 import { derivative } from 'mathjs'
+import { ElMessage } from 'element-plus'
 
 const CALCULATION_ACCURACY = 1e-10 // 计算精度
 const DISPLAY_ACCURACY = 9 // 显示小数点位数
@@ -67,20 +68,6 @@ const hasRealSolution = (f, x0, xl, xr) => {
   return hasNegative && hasPositive;
 }
 
-// x^3 - log(x) - 2   x = 1.314978719984
-// 5 * x - 7 - 3 * (2 * x + 1)   x = -10
-// x ^ 2 + x - 12   x = 3 或 -4
-// 2^(ln(x)) - 8   x = 20.085536923188
-// e ^ x - 3 * x   x = 0.619061286736 或 1.512134551658
-// 1 / x - 5   x = 0.2
-// x^3 - 2 * x + 2   x = -1.76929
-// (x + 2)/(x - 3) - (2 * x - 1)/(x + 4) - 3/(x^2 + x - 12)   x = -0.152067347825
-// (3 * x)^0.5 - (x + 1)^0.5 - 2   x = 8.742640687119
-// 2^(x + 1) + 2^(x - 1) = 5   x = 1
-// lg(x + 3)/lg(2) + lg(x - 1)/lg(2) - 3   x = 2.4641013145446777344
-// x^3 - 3 * x^2 + 2 * x   x = 0 或 1 或 2
-// 2 * sin(x)^2 + 3 * cos(x) - 3   x = 0 或 1.047197551197 或
-
 // 混合法解一元方程 (牛顿法 + 二分法)
 const hybridMethod = (f, x0, fPrime, tol = CALCULATION_ACCURACY, maxIter = 50, timeoutMs = 3000) => {
   let x = new Decimal(x0)
@@ -117,6 +104,10 @@ const hybridMethod = (f, x0, fPrime, tol = CALCULATION_ACCURACY, maxIter = 50, t
   }
 
   console.log(`达到最大迭代次数 ${maxIter}, 当前解为 ${x}, 使用二分法`)
+  ElMessage({
+    message: '达到最大迭代次数，使用二分法',
+    type: 'info'
+  })
   const [a, b] = findInitialInterval(f, x0)
   return bisection(f, a, b)
 }
@@ -246,3 +237,17 @@ const createParserFunction = (expression) => {
 const createParserDerivative = (expression) => {
   return createParserFunction(derivative(expression, 'x').toString())
 }
+
+/**
+ *  测试
+ *
+ *  𝓍^5 − 3×𝓍^2 + 1   x === −0.561070007 或  0.599241028 或 1.348046941
+ *  x^3 - ln(x) - 2   x === 0.135673691 或 1.31497872
+ *  5×𝓍−7−3×(2×𝓍^𝑙𝑔(𝓍))+1   x === 3.810429076 或 5.837452074
+ *  1 / 𝓍 − 100   x === 0.001
+ *  𝓍^3 − 2×𝓍 + 2   x === −1.769292354
+ *  (3×𝓍)^0.5 − (𝓍+1)^0.5−2|   x === 8.742640687
+ *  (x + 2)/(x - 3) - (2 * x - 1)/(x + 4) - 3/(x^2 + x - 12)   x === −0.152067348 或 13.152067348 (3到6内有两个根解不出)
+ *  𝑙𝑔(𝓍+3)/𝑙𝑔(2) + 𝑙𝑔(𝓍−1)/𝑙𝑛(2) − 3   x === 2.965437259
+ *  2×(𝑠𝑖𝑛(c𝓍))^2 + 3 × 𝑐𝑜𝑠(𝓍) − 3   x === 0 或 1.047197551 或 5.235987756 或 6.283177724 或 7.330382858 等
+ */
