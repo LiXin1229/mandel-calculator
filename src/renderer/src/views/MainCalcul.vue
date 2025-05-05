@@ -111,6 +111,13 @@ const handleButtonClick = (button) => {
   }, 200)
 
   if (button.id === 33) { // 主题切换
+    if (currentTheme.value === 'dark') {
+      currentTheme.value = 'light'
+      localStorage.setItem('theme', 'light')
+    } else {
+      currentTheme.value = 'dark'
+      localStorage.setItem('theme', 'dark')
+    }
     document.documentElement.classList.toggle('dark')
     return
   }
@@ -731,11 +738,7 @@ const beautifyDisplay = (str) => {
 // 光标样式的闪烁控制
 let flicker = ref(true)
 
-onMounted(() => {
-  interval = setInterval(() => {
-    flicker.value = !flicker.value
-  }, 500)
-
+const bindingKey = () => {
   const allButtons = [
     ...main_btn_rows.flat(),
     ...math_btn_rows.flat(),
@@ -775,6 +778,21 @@ onMounted(() => {
   }
 
   document.addEventListener('keyup', handleKeyUp)
+}
+
+let currentTheme = ref('')
+const initTheme = () => {
+  currentTheme.value = localStorage.getItem('theme') || 'light'
+  currentTheme.value === 'dark' && document.documentElement.classList.add('dark')
+}
+
+onMounted(() => {
+  interval = setInterval(() => {
+    flicker.value = !flicker.value
+  }, 500)
+
+  bindingKey()
+  initTheme()
 })
 
 onBeforeUnmount(() => {
