@@ -58,6 +58,7 @@ const createWindow = () => {
   ipcMainHandlers.push({ event: 'check-topUp', handler: checkTopUpHandler })
 
   mainWindow.on('ready-to-show', () => {
+    mainWindow.setTitle('Mandel Computing Unit')
     mainWindow.show()
   })
 

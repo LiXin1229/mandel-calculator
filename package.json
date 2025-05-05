@@ -1,10 +1,10 @@
 {
-  "name": "calculator",
+  "name": "mandel-computing-unit",
   "version": "1.0.0",
-  "description": "An Electron application with Vue",
+  "description": "An intuitive calculator by Electron",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "isomer1229.com",
+  "homepage": "https://gitee.com/isomer1229/mandel-computing",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -16,6 +16,17 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
+  },
+  "build": {
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": false
+    }
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
