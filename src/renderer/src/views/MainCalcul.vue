@@ -148,12 +148,7 @@ const handleButtonClick = (button) => {
   if ([40, 41].includes(button.id)) return
 
   if (button.id === 35) { // 光标左移
-    if (history.length > 0 && cursor_index.value - 1 < 0) {
-      ori_expression.value = history.pop()
-      cursor_index.value = ori_expression.value.length
-    } else {
-      moveCursor(cursor_index.value - 1, ori_expression.value.length)
-    }
+    moveCursor(cursor_index.value - 1, ori_expression.value.length)
   }
 
   else if (button.id === 36) { // 光标右移
@@ -480,7 +475,7 @@ const handleSolve = () => {
       }
       const x_res = solveEquationByHybrid(ori_expression.value, _x0)
       console.log('使用混合法, ', ori_expression.value, x0.value, ' x = ', x_res)
-      history.push(ori_expression.value + ' = 0\u00A0\u00A0\u00A0[' + '𝓍₀ = ' + _x0 + ']\u00A0\u00A0\u00A0' + '𝓍 = ' + x_res)
+      history.push(ori_expression.value + ' = 0\u00A0\u00A0\u00A0' + '𝓍 = ' + x_res + '\u00A0\u00A0\u00A0' + '[𝓍₀ = ' + _x0 + ']')
     } catch (err) {
       // alert(err)
       ElMessage({
@@ -506,7 +501,7 @@ const handleSolve = () => {
       }
       const x_res = solveEquationByBisection(ori_expression.value, _x0, _xl, _xr)
       console.log('使用二分法, ', ori_expression.value, x_list[0], x_list[1], ' x = ', x_res)
-      history.push(`${ori_expression.value} = 0\u00A0\u00A0\u00A0[𝓍ₗ = ${_xl}, 𝓍ᵣ = ${_xr}]\u00A0\u00A0\u00A0𝓍 = ${x_res}`)
+      history.push(`${ori_expression.value} = 0\u00A0\u00A0\u00A0𝓍 = ${x_res}\u00A0\u00A0\u00A0[𝓍ₗ = ${_xl}, 𝓍ᵣ = ${_xr}]`)
     } catch (err) {
       // alert(err)
       ElMessage({
@@ -568,11 +563,11 @@ const renderInitialX = () => {
   const baseStyle = {
     position: 'absolute',
     left: 'calc(25vw + 10px)',
-    right: 'calc(30vw + 10px)',
+    right: 'calc(32vw + 10px)',
     height: '3vh',
     lineHeight: '3vh',
     textAlign: 'left',
-    fontSize: '2.2vh',
+    fontSize: 'calc(1vh + 1vw)',
     marginTop: '8px',
     backgroundColor: 'var(--theme-screen)',
     padding: '0 0 15px 5px',
@@ -608,7 +603,7 @@ const renderInitialX = () => {
     style: {
       ...baseStyle,
       height: '7vh',
-      ...border
+      ...border,
     }
   }, [
     h('div',
@@ -667,7 +662,7 @@ const renderDisplay = () => {
   const currentLine = h('div', {
     style: {
       color: 'var(--theme-text-2)',
-      'font-size': '3vh',
+      'font-size': 'calc(2vh + 1vw)',
       'overflow-wrap': 'break-word',
       overflow: 'hidden',
       width: 'calc(100vw - 40px)',
@@ -698,7 +693,7 @@ const renderDisplay = () => {
       h('div', {
         style: {
           color: 'var(--theme-icon-func)',
-          'font-size': '2.4vh',
+          'font-size': 'calc(1.2vh + 1vw)',
           height: '2.6vh',
           width: 'calc(100vw - 40px)',
           'line-height': '2vh',
@@ -947,7 +942,6 @@ onBeforeUnmount(() => {
           padding-left: 10px;
           line-height: 3.2vh;
           font-size: 2.5vh;
-          height: 3.6vh;
           border-top: 1.5px solid transparent;
           border-bottom: 1.5px solid transparent;
         }
@@ -968,13 +962,15 @@ onBeforeUnmount(() => {
         position: relative;
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
 
         .left {
           .functional_btn {
             display: inline-block;
-            width: 6vh;
-            height: 6vh;
-            line-height: 6vh;
+            width: calc(3vh + 2vw);
+            height: calc(3vh + 2vw);
+            line-height: calc(3vh + 2vw);
             text-align: center;
             font-size: 3vh;
             border-radius: 1vh;
@@ -998,6 +994,8 @@ onBeforeUnmount(() => {
       .bottom {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
 
         .functional_btn {
           display: inline-block;
@@ -1017,7 +1015,7 @@ onBeforeUnmount(() => {
 
         .solve-type-btn {
           width: calc((100vw - 20px - 15px) / 5);
-          font-size: calc(2.5vh);
+          font-size: calc(1.5vh + 1vw);
           background-color: var(--theme-btn);
           color: var(--theme-active-history);
           border-color: var(--theme-active-history);
@@ -1026,70 +1024,35 @@ onBeforeUnmount(() => {
 
       .round-btn {
         display: inline-block;
-        width: 7vh;
-        height: 7vh;
-        line-height: 7vh;
+        width: calc(5vh + 1vw);
+        height: calc(5vh + 1vw);
+        line-height: calc(5vh + 1vw);
         text-align: center;
         font-size: calc(2vh);
         background-color: var(--theme-btn);
         color: var(--theme-text-2);
         border: 1px solid var(--theme-border);
         border-radius: 50%;
-        margin-top: 7px;
-        margin-left: 7px;
+        margin-top: 10px;
+        margin-left: 10px;
         transition: 0.2s all linear;
       }
 
-      @media (max-width: 379px) and (min-height: 501px) {
-        .round-btn {
-          width: 6vh;
-          height: 6vh;
-          line-height: 6vh;
-          font-size: calc(1.5vh);
-          margin-top: 5px;
-          margin-right: 5px;
-        }
-
-        .functional_btn {
-          width: 5vh;
-          height: 5vh;
-          line-height: 5vh;
-          font-size: calc(2.5vh) !important;
-          margin-top: 5px;
-        }
-
-        .theme-history {
-          width: 5vh !important;
-          height: 5vh !important;
-          font-size: 3vh !important;
-          line-height: 5vh !important;
-        }
-
-        .solve-type-btn {
-          font-size: calc(2vh) !important;
-        }
-
-        .bottom {
-          margin-top: 2vh;
-        }
-      }
-
-      @media (max-width: 389px) and (min-height: 701px) {
+      @media (max-width: 339px) and (min-height: 751px) {
         .round-btn {
           width: 5vh;
           height: 5vh;
           line-height: 5vh;
           font-size: calc(1.5vh);
           margin-top: 5px;
-          margin-right: 5px;
+          margin-right: 0;
         }
 
         .functional_btn {
-          width: 5vh;
-          height: 5vh;
-          line-height: 5vh;
+          width: 4vh;
+          height: 4vh;
+          line-height: 4vh;
           font-size: calc(1.8vh) !important;
-          margin-top: 5px;
         }
 
         .theme-history {
@@ -1108,7 +1071,6 @@ onBeforeUnmount(() => {
     .math-panel {
       height: 17vh;
       width: calc(100vw - 20px);
-      padding: 3px 0;
 
       .row {
         display: flex;
@@ -1142,7 +1104,7 @@ onBeforeUnmount(() => {
 
         .col {
           width: calc((100vw - 20px - 12px) / 5);
-          height: calc((42vh - 35px - 15px - 5px) / 4);
+          height: calc((42vh - 35px - 15px - 10px) / 4);
           line-height: calc((42vh - 35px - 15px) / 4);
           margin-bottom: 3px;
           text-align: center;

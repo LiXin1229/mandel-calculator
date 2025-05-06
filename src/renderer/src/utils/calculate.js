@@ -14,11 +14,11 @@ export const calculate = (expression) => {
   const ops = [] // 运算符栈
   let i = 0
 
-  const processOpration = (op) => {
-    while (ops.length > 0 && priority[ops[ops.length - 1]] >= priority[op]) {
+  // 比较运算符栈栈顶与新op的优先级
+  const processOperation = (op) => {
+    while (ops.length > 0 && priority[ops[ops.length - 1]] >= priority[op]) { // 新op高于栈顶进行计算
       const b = values.pop()
       const a = values.length > 0 ? values.pop() : Decimal(0)
-      console.log('#', a.toString(), b.toString())
       values.push(applyOperation(a, b, ops.pop()))
     }
     ops.push(op)
@@ -60,7 +60,7 @@ export const calculate = (expression) => {
     }
 
     if (ch === ')') {
-      while (ops[ops.length - 1] !== '(') {
+      while (ops[ops.length - 1] !== '(') { // 将上个 '(' 后的所有 values 弹出进行计算
         const b = values.pop()
         const a = values.pop()
         values.push(applyOperation(a, b, ops.pop()))
@@ -80,7 +80,7 @@ export const calculate = (expression) => {
 
     // 处理运算符和函数
     if (['+', '-', '*', '/', '^'].includes(ch)) {
-      processOpration(ch)
+      processOperation(ch)
       i++
       continue
     }
@@ -103,14 +103,14 @@ export const calculate = (expression) => {
       continue
     }
 
-    // 处理常数
+    // 处理特殊常数
     if (ch === 'π' || ch === 'e') {
-      values.push(Decimal(ch === 'π' ? Math.PI : Math.E));
+      values.push(Decimal(ch === 'π' ? Math.PI : Math.E))
       i++
       continue
     }
 
-    throw new Error('非法运算符')
+    throw new Error('非法字符')
   }
 
   // 处理剩余运算符
@@ -123,8 +123,8 @@ export const calculate = (expression) => {
   return values.pop().toDecimalPlaces(DISPLAY_ACCURACY).toString()
 }
 
+// 两两运算 或 三角计算
 const applyOperation = (a, b, op) => {
-  console.log(a.toString(), b.toString(), op)
   switch (op) {
     case '+': return a.plus(b)
     case '-': return a.minus(b)
@@ -140,7 +140,7 @@ const applyOperation = (a, b, op) => {
   }
 }
 
-// 处理角度
+// 处理角度 (六十进制角度字符串 => 十进制角度值)
 const handleDegrees = (numStr) => {
   const degIndex = numStr.indexOf('°')
   const minIndex = numStr.indexOf("'")
@@ -205,6 +205,8 @@ const isNum = (ch) => {
 
 /**
  * 测试
+ *  3 + 5 * 2   3 * 5 + 2
+ *  4 + (2 - 5 * 3)   4 + (2 * 5 - 3)
  *
  *  (213°58'13' - 24°8'49") / 2 - 90° === 4°54'42"
  *  3*(4+(2*(5-1)/ln(2))) === 46.62468096
