@@ -1,6 +1,6 @@
 {
   "name": "mandel-computing-unit",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "An Intuitive Calculator by Electron",
   "main": "./out/main/index.js",
   "author": "isomer1229.com",

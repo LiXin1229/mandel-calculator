@@ -1,12 +1,14 @@
 import Decimal from 'decimal.js'
 
+
 const DISPLAY_ACCURACY = 9 // 结果精度
 
 const priority = { // 运算符优先级
   '+': 1, '-': 1,
   '*': 2, '/': 2,
   '^': 3,
-  's': 4, 'c': 4, 't': 4, 'n': 4, 'g': 4, 'r': 5 // 函数优先级最高
+  's': 4, 'c': 4, 't': 4, 'n': 4, 'g': 4, 'r': 5,
+  'u': 6 // 处理一元负号
 }
 
 export const calculate = (expression) => {
@@ -56,7 +58,7 @@ export const calculate = (expression) => {
     if (ch === '(') {
       ops.push(ch)
       i++
-      continue
+      continue //4.714831668  118/25  201/50000
     }
 
     if (ch === ')') {
@@ -74,6 +76,14 @@ export const calculate = (expression) => {
         values.push(applyOperation(Decimal(0), b, func))
       }
 
+      i++
+      continue
+    }
+
+    // 处理一元负号
+    if (ch === '-' && (i === 0 || expression[i - 1] === '(' || ['+', '-', '*', '/', '^'].includes(expression[i-1]))) {
+      values.push(Decimal(0))
+      ops.push('u') // 相当于在下一次运算时强制进行 0 - 负号后的数
       i++
       continue
     }
@@ -117,6 +127,7 @@ export const calculate = (expression) => {
   while (ops.length > 0) {
     const b = values.pop()
     const a = values.length > 0 ? values.pop() : Decimal(0)
+    // console.log(a.toString(), ops[ops.length - 1], b.toString())
     values.push(applyOperation(a, b, ops.pop()))
   }
 
@@ -131,6 +142,7 @@ const applyOperation = (a, b, op) => {
     case '*': return a.times(b)
     case '/': return a.dividedBy(b)
     case '^': return a.pow(b)
+    case 'u': return a.minus(b)
     case 's': return Decimal(Math.sin(b.toNumber()))
     case 'c': return Decimal(Math.cos(b.toNumber()))
     case 't': return Decimal(Math.tan(b.toNumber()))
@@ -195,12 +207,12 @@ export const decimalToDMS = (decimalDegrees) => {
 // 将 ° 转化成 弧度
 const decimalToRad = (degrees) => {
   const pi = new Decimal(Math.PI)
-  return degrees.times(pi).dividedBy(180).toDecimalPlaces(DISPLAY_ACCURACY)
+  return degrees.times(pi).dividedBy(180).toDecimalPlaces(DISPLAY_ACCURACY + 1)
 }
 
 // 判断是否是 数字 及 ° ' "
 const isNum = (ch) => {
-  return (!isNaN(ch) || ch === '.' || ch === '°' || ch === '\'' || ch === '\"')
+  return (!isNaN(ch) || ['.', '°', '\'', '\"'].includes(ch))
 }
 
 /**
@@ -208,7 +220,7 @@ const isNum = (ch) => {
  *  3 + 5 * 2   3 * 5 + 2
  *  4 + (2 - 5 * 3)   4 + (2 * 5 - 3)
  *
- *  (213°58'13' - 24°8'49") / 2 - 90° === 4°54'42"
+ *  (213°58'13"-24°8'49") / 2 - 90° === 4°54'42"
  *  3*(4+(2*(5-1)/ln(2))) === 46.62468096
  *  sin(π/3)^2 + cos(rad(60))^2 === 1
  *  2^ln(sin(rad(45°))) / e^e === 0.051896271
