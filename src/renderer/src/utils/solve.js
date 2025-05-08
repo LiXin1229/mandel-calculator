@@ -65,7 +65,7 @@ const hasRealSolution = (f, x0, xl, xr) => {
     }
   }
 
-  return hasNegative && hasPositive;
+  return hasNegative && hasPositive
 }
 
 // 混合法解一元方程 (牛顿法 + 二分法)
@@ -121,6 +121,10 @@ const bisection = (f, a, b, tol = CALCULATION_ACCURACY) => {
   let fa = f(aDec)
   let fb = f(bDec)
 
+  // 如果端点是根直接返回
+  if (fa.eq(0)) return fa.toString()
+  if (fb.eq(0)) return fb.toString()
+
   while (bDec.minus(aDec).abs().gt(tolDec)) {
     const c = aDec.plus(bDec).dividedBy(2)
     const fc = f(c)
@@ -141,7 +145,7 @@ const bisection = (f, a, b, tol = CALCULATION_ACCURACY) => {
 // 初始化二分法区间
 const findInitialInterval = (f, x0, count = 0, maxAttempts = 20, timeoutMs = 2000) => {
   const x0Dec = new Decimal(x0)
-  console.log(count)
+  // console.log(count)
   // 基础步长
   const baseStep = new Decimal(0.5)
 

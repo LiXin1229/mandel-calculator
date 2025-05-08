@@ -73,7 +73,7 @@ const functional_btn_rows = [
   ],
   [
     { id: 40, value: 'Escape', display: 'Esc' },
-    { id: 41, value: 'enter', display: 'Shift' }
+    { id: 41, value: 'enter', display: 'Enter' }
   ]
 ]
 
@@ -734,6 +734,8 @@ const beautifyDisplay = (str) => {
 // 光标样式的闪烁控制
 let flicker = ref(true)
 
+let handleKeyUp // 存储事件处理函数
+
 const bindingKey = () => {
   const allButtons = [
     ...main_btn_rows.flat(),
@@ -741,7 +743,7 @@ const bindingKey = () => {
     ...functional_btn_rows.flat()
   ]
 
-  const handleKeyUp = (e) => {
+  handleKeyUp = (e) => {
     // console.log(e)
     const key = e.key
     const button = allButtons.find(btn => btn.value === key)
