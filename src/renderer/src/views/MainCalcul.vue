@@ -754,28 +754,28 @@ const bindingKey = () => {
       const before = ori_expression.value.slice(0, cursor_index.value)
       const after = ori_expression.value.slice(cursor_index.value++)
       ori_expression.value = before + key + after
-    } else if (key === 'Enter') {
+    } else if (key === 'Enter') { // 'Enter' => '='
       read_history.value ? handleButtonClick({ id: 41 }) : handleButtonClick({ id: 20 })
-    } else if (['ArrowLeft', 'ArrowUp'].includes(key)) {
+    } else if (['ArrowLeft', 'ArrowUp'].includes(key)) { // 键盘左右箭头 => 光标移动
       handleButtonClick({ id: 35 })
-    } else if (['ArrowRight', 'ArrowDown'].includes(key)) {
+    } else if (['ArrowRight', 'ArrowDown'].includes(key)) { // 键盘上下箭头 => 光标移动
       handleButtonClick({ id: 36 })
-    } else if (['q', ';', ':'].includes(key)) {
+    } else if (['q', ';', ':'].includes(key)) { // 'q', ';', ':' => '°'
       handleButtonClick({ id: 37, value: '°' })
-    } else if (key === 'Alt') {
+    } else if (key === 'Alt') { // 'Alt' => 解方程
       handleButtonClick({ id: 19 })
-    } else if (key === 'Control') {
+    } else if (key === 'Control') { // 'Ctrl' => 十进制角度转六十进制角度
       handleButtonClick({ id: 18 })
-    } else if (key === 'Tab') {
+    } else if (key === 'Tab') { // 'Tab' => 切换解方程方法
       TriggerSolveType()
-    } else if (key === 'h') {
+    } else if (key === 'h') { // 'h' => 历史记录
       handleButtonClick({ id: 34 })
-    } else if (key === 'm') {
+    } else if (key === 'm') { // 'm' => 切换深色/浅色
       handleButtonClick({ id: 33 })
     }
   }
 
-  document.addEventListener('keyup', handleKeyUp)
+  document.addEventListener('keydown', handleKeyUp)
 }
 
 let currentTheme = ref('')
@@ -795,7 +795,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearInterval(interval)
-  document.removeEventListener('keyup', handleKeyUp)
+  document.removeEventListener('keydown', handleKeyUp)
 })
 </script>
 

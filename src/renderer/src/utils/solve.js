@@ -204,7 +204,7 @@ const getDynamicStep = (f, x, baseStep) => {
   return adjustedStep
 }
 
-// 微分法解释导数
+// 微分法求导数
 const numericalDerivative = (f, h = 1e-8) => {
   return x => {
     const hDec = new Decimal(h)
