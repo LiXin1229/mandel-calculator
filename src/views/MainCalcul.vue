@@ -774,7 +774,7 @@ const bindingKey = () => {
     }
   }
 
-  document.addEventListener('keyup', handleKeyUp)
+  document.addEventListener('keydown', handleKeyUp)
 }
 
 let currentTheme = ref('')
@@ -790,12 +790,11 @@ onMounted(() => {
 
   bindingKey()
   initTheme()
-  // initMobileDevice()
 })
 
 onBeforeUnmount(() => {
   clearInterval(interval)
-  document.removeEventListener('keyup', handleKeyUp)
+  document.removeEventListener('keydown', handleKeyUp)
 })
 </script>
 

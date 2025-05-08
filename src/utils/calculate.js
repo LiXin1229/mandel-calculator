@@ -18,7 +18,7 @@ export const calculate = (expression) => {
 
   // 比较运算符栈栈顶与新op的优先级
   const processOperation = (op) => {
-    while (ops.length > 0 && priority[ops[ops.length - 1]] >= priority[op]) { // 新op高于栈顶进行计算
+    while (ops.length > 0 && priority[ops[ops.length - 1]] >= priority[op]) { // 新op低于栈顶时 pop values 后两个值进行计算后重新压入values
       const b = values.pop()
       const a = values.length > 0 ? values.pop() : Decimal(0)
       values.push(applyOperation(a, b, ops.pop()))
@@ -58,7 +58,7 @@ export const calculate = (expression) => {
     if (ch === '(') {
       ops.push(ch)
       i++
-      continue //4.714831668  118/25  201/50000
+      continue
     }
 
     if (ch === ')') {
