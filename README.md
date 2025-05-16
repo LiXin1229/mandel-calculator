@@ -1,16 +1,14 @@
 ## 效果图
 
-![](.\resources\屏幕截图 2025-05-15 123818.png)
+![](resources/example1.png)
 
-![](.\resources\屏幕截图 2025-05-15 124020.png)
+![](resources/example2.png)
 
-![](.\resources\屏幕截图 2025-05-15 124117.png)
+![](resources/example3.png)
 
-![](.\resources\屏幕截图 2025-05-15 124227.png)
+![](resources/example4.png)
 
-![](.\resources\屏幕截图 2025-05-15 123241.png)
-
-
+![](resources/example5.png)
 
 
 
