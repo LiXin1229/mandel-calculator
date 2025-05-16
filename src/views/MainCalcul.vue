@@ -39,7 +39,7 @@ const main_btn_rows = [
 
 const math_btn_rows = [
   [
-    { id: 21, value: 'x', display: '𝓍' },
+    { id: 21, value: 'x', display: 'x' },
     { id: 22, value: '^', display: '^' },
     { id: 23, value: 'lg(', display: '𝑙𝑔' },
     { id: 24, value: 'ln(', display: '𝑙𝑛' },
@@ -47,7 +47,7 @@ const math_btn_rows = [
     { id: 26, value: 'π', display: 'π' }
   ],
   [
-    { id: 27, value: 'rad(', display: '𝓇𝒶𝒹' },
+    { id: 27, value: 'rad(', display: 'rad' },
     { id: 28, value: 'sin(', display: '𝑠𝑖𝑛' },
     { id: 29, value: 'cos(', display: '𝑐𝑜𝑠' },
     { id: 30, value: 'tan(', display: '𝑡𝑎𝑛' },
@@ -581,7 +581,7 @@ const renderInitialX = () => {
         ...border
       }
     }, [
-      h('span', { class: 'title' }, '𝓍₀ = '),
+      h('span', { class: 'title' }, 'x₀ = '),
       before,
       showInitialX.value && h('span', {
         style: {
@@ -607,7 +607,7 @@ const renderInitialX = () => {
   }, [
     h('div',
       [
-        h('span', '𝓍ₗ = '),
+        h('span', 'xₗ = '),
         left_before,
         (!isleft.value && showInitialX.value) ? h('span', {
           style: {
@@ -625,7 +625,7 @@ const renderInitialX = () => {
     ),
     h('div',
       [
-        h('span', '𝓍ᵣ = '),
+        h('span', 'xᵣ = '),
         right_before,
         (isleft.value && showInitialX.value) ? h('span', {
           style: {
@@ -716,7 +716,6 @@ let interval
 
 const beautifyDisplay = (str) => {
   return [
-    { pattern: /rad/g, replacement: '𝓇𝒶𝒹' },
     { pattern: /lg/g, replacement: '𝑙𝑔' },
     { pattern: /ln/g, replacement: '𝑙𝑛' },
     { pattern: /sin/g, replacement: '𝑠𝑖𝑛' },
@@ -724,7 +723,6 @@ const beautifyDisplay = (str) => {
     { pattern: /tan/g, replacement: '𝑡𝑎𝑛' },
     { pattern: /-/g, replacement: '−' },
     { pattern: /\*/g, replacement: '×' },
-    { pattern: /x/g, replacement: '𝓍' },
     { pattern: /e/g, replacement: '𝒆' }
   ].reduce((acc, { pattern, replacement }) =>
     acc.replace(pattern, replacement), str)
