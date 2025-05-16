@@ -1,14 +1,14 @@
 ## 效果图
 
-![](D:\Projects\Calculator\calculator-electron\resources\屏幕截图 2025-05-15 123818.png)
+![](.\resources\屏幕截图 2025-05-15 123818.png)
 
-![](D:\Projects\Calculator\calculator-electron\resources\屏幕截图 2025-05-15 124020.png)
+![](.\resources\屏幕截图 2025-05-15 124020.png)
 
-![](D:\Projects\Calculator\calculator-electron\resources\屏幕截图 2025-05-15 124117.png)
+![](.\resources\屏幕截图 2025-05-15 124117.png)
 
-![](D:\Projects\Calculator\calculator-electron\resources\屏幕截图 2025-05-15 124227.png)
+![](.\resources\屏幕截图 2025-05-15 124227.png)
 
-![](D:\Projects\Calculator\calculator-electron\resources\屏幕截图 2025-05-15 123241.png)
+![](.\resources\屏幕截图 2025-05-15 123241.png)
 
 
 
