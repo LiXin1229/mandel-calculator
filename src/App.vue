@@ -24,13 +24,12 @@ body {
       color: var(--theme-msg-info);
     }
   }
-  height: 100vh;
   overflow: hidden; /* 隐藏外部滚动条 */
 
   .container {
     overflow-y: auto;
     height: 100vh;
-    margin-right: -5px; /* 隐藏滚动条 */
+    margin-right: -10px; /* 隐藏滚动条 */
 
     .link {
       text-align: center;
