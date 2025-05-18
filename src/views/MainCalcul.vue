@@ -77,7 +77,6 @@ const functional_btn_rows = [
 ]
 
 // 需修改样式的按钮
-const italic_list = [26]
 const larger_list = [9, 10, 14, 17, 20]
 const smaller_list = [3, 18, 19]
 const spical_list = [20]
@@ -473,7 +472,7 @@ const handleSolve = () => {
       }
       const x_res = solveEquationByHybrid(ori_expression.value, _x0)
       console.log('使用混合法, ', ori_expression.value, x0.value, ' x = ', x_res)
-      history.push(ori_expression.value + ' = 0\u00A0\u00A0\u00A0' + '𝓍 = ' + x_res + '\u00A0\u00A0\u00A0' + '[𝓍₀ = ' + _x0 + ']')
+      history.push(ori_expression.value + ' = 0\u00A0\u00A0\u00A0' + '𝑥 = ' + x_res + '\u00A0\u00A0\u00A0' + '[𝑥₀ = ' + _x0 + ']')
     } catch (err) {
       // alert(err)
       ElMessage({
@@ -499,7 +498,7 @@ const handleSolve = () => {
       }
       const x_res = solveEquationByBisection(ori_expression.value, _x0, _xl, _xr)
       console.log('使用二分法, ', ori_expression.value, x_list[0], x_list[1], ' x = ', x_res)
-      history.push(`${ori_expression.value} = 0\u00A0\u00A0\u00A0𝓍 = ${x_res}\u00A0\u00A0\u00A0[𝓍ₗ = ${_xl}, 𝓍ᵣ = ${_xr}]`)
+      history.push(`${ori_expression.value} = 0\u00A0\u00A0\u00A0𝑥 = ${x_res}\u00A0\u00A0\u00A0[𝑥ₗ = ${_xl}, 𝑥ᵣ = ${_xr}]`)
     } catch (err) {
       // alert(err)
       ElMessage({
@@ -848,7 +847,7 @@ onBeforeUnmount(() => {
             {{ solve_type.value }}
           </div>
           <div class="right">
-            <span :class="['round-btn', btn.id === click_btn && 'active', italic_list.includes(btn.id) && 'italic']" v-for="btn in functional_btn_rows[3]" :key="btn.id" @click="handleButtonClick(btn)">
+            <span :class="['round-btn', btn.id === click_btn && 'active']" v-for="btn in functional_btn_rows[3]" :key="btn.id" @click="handleButtonClick(btn)">
               {{ btn.display }}
             </span>
           </div>
@@ -857,7 +856,7 @@ onBeforeUnmount(() => {
       <div class="math-panel unselectable">
         <div class="row" v-for="(row, rowIndex) in math_btn_rows" :key="rowIndex">
           <div
-            :class="['col', button.id === click_btn && 'active', italic_list.includes(button.id) && 'italic']"
+            :class="['col', button.id === click_btn && 'active']"
             v-for="(button) in row"
             :key="button.id"
             @click="handleButtonClick(button)"
@@ -908,6 +907,7 @@ onBeforeUnmount(() => {
     font-style: italic;
     font-size: 12px;
     padding-left: 30px;
+    position: relative;
 
     .left {
       color: #fff;
@@ -1119,11 +1119,6 @@ onBeforeUnmount(() => {
 
   .active {
     background-color: var(--theme-btn-hover1) !important;
-  }
-
-  .italic {
-    font-style: italic;
-    font-family: "Microsoft YaHei", "SimHei", sans-serif;
   }
 
   .larger {
