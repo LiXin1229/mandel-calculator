@@ -733,6 +733,7 @@ const beautifyDisplay = (str) => {
 let flicker = ref(true)
 
 let handleKeyUp // 存储事件处理函数
+let handleDbClick
 
 const bindingKey = () => {
   const allButtons = [
@@ -774,6 +775,13 @@ const bindingKey = () => {
   }
 
   document.addEventListener('keydown', handleKeyUp)
+
+  handleDbClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    return false
+  }
+  document.addEventListener('dblclick', handleDbClick)
 }
 
 let currentTheme = ref('')
@@ -794,11 +802,12 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearInterval(interval)
   document.removeEventListener('keydown', handleKeyUp)
+  document.removeEventListener('dblclick', handleDbClick)
 })
 </script>
 
 <template>
-  <div class="main-calcul">
+  <div class="main-calcul no-double-click">
     <div class="top-bar drag">
       <div class="left">
         <img src="/icon.ico" alt="">

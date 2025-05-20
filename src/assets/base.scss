@@ -154,3 +154,7 @@ body {
 ::-webkit-scrollbar-corner {
   background: #bfbfbf;
 }
+
+.no-double-click {
+  touch-action: manipulation; /* 阻止双击缩放 */
+}
