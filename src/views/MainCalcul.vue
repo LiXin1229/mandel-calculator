@@ -664,6 +664,7 @@ const renderDisplay = () => {
       overflow: 'hidden',
       width: 'calc(100vw - 40px)',
       height: 'calc(24vh - 24px)',
+      wordBreak: 'break-all' // 强制换行
     }
   }, [
     before,
@@ -953,6 +954,7 @@ onBeforeUnmount(() => {
           font-size: 2.5vh;
           border-top: 1.5px solid transparent;
           border-bottom: 1.5px solid transparent;
+          word-break: break-all; // 强制换行
         }
 
         .active_history {
