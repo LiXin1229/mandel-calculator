@@ -78,7 +78,6 @@ const functional_btn_rows = [
 ]
 
 // 需修改样式的按钮
-const italic_list = [22]
 const larger_list = [9, 10, 14, 17, 20]
 const smaller_list = [3, 18, 19]
 const spical_list = [20]
@@ -666,6 +665,7 @@ const renderDisplay = () => {
       overflow: 'hidden',
       width: 'calc(100vw - 40px)',
       height: 'calc(24vh - 24px)',
+      wordBreak: 'break-all' // 强制换行
     }
   }, [
     before,
@@ -859,7 +859,7 @@ onBeforeUnmount(() => {
       <div class="math-panel unselectable">
         <div class="row" v-for="(row, rowIndex) in math_btn_rows" :key="rowIndex">
           <div
-            :class="['col', button.id === click_btn && 'active', italic_list.includes(button.id) && 'italic']"
+            :class="['col', button.id === click_btn && 'active']"
             v-for="(button) in row"
             :key="button.id"
             @click="handleButtonClick(button)"
@@ -946,6 +946,7 @@ onBeforeUnmount(() => {
           font-size: 2.5vh;
           border-top: 1.5px solid transparent;
           border-bottom: 1.5px solid transparent;
+          word-break: break-all; // 强制换行
         }
 
         .active_history {
@@ -1123,11 +1124,6 @@ onBeforeUnmount(() => {
 
   .active {
     background-color: var(--theme-btn-hover1) !important;
-  }
-
-  .italic {
-    font-style: italic;
-    font-family: 'Dancing Script', 'Segoe Script', 'Brush Script MT', cursive;
   }
 
   .larger {
